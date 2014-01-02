@@ -17,7 +17,7 @@ public class StartScript : MonoBehaviour {
 	public GameObject playerCameraPrefab;
 	public Transform[] spawnPositions;
 	
-	[System.NonSerialized]
+	[HideInInspector]
 	public bool paused = true;
 	
 	[System.Serializable]
@@ -51,7 +51,7 @@ public class StartScript : MonoBehaviour {
 		
 		for( int i=0; i<cols; i++ ){
 			for( int j=0; j < rows && playerIndex<numberOfPlayers; j++ ){
-				Debug.Log (i+", "+j);
+				
 				GameObject player = (GameObject)Instantiate( playerPrefab, spawnPositions[playerIndex].position, spawnPositions[playerIndex].rotation );
 				GameObject playerCamera = (GameObject)Instantiate( playerCameraPrefab );
 			
@@ -106,8 +106,6 @@ public class StartScript : MonoBehaviour {
 		
 		//Wait to see if anyone else crashes
 		yield return new WaitForSeconds(0.1f);
-		
-		Debug.Log ( String.Format("Remaining Players {0}",remainingPlayers));
 		
 		if( remainingPlayers == 1 ) {
 			paused = true;

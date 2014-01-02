@@ -6,6 +6,11 @@ public class Crash : MonoBehaviour {
 	public AudioClip crashClip;
 	public Color flashTintColor;
 	
+	protected const float duration = 0.2f;
+	protected const int numOfBikeBits = 20;
+	protected const float startSpeed = 30f;
+	protected const float drag = 0.93f;
+	
 	// Use this for initialization
 	IEnumerator Start () {
 		GameObject crashFX = gameObject;
@@ -14,34 +19,25 @@ public class Crash : MonoBehaviour {
 		AudioSource sfxSource = crashFX.AddComponent<AudioSource>();
 		sfxSource.clip = crashClip;
 		sfxSource.Play();
-		//LineRenderer crashLines = crashFX.AddComponent<LineRenderer>();
+
 		MeshFilter crashMeshFilter = crashFX.AddComponent<MeshFilter>();
 		Renderer crashRenderer = crashFX.AddComponent<MeshRenderer>();
 		Mesh crashMesh = new Mesh();
 		crashMeshFilter.mesh = crashMesh;
-		int lines = 20*3;
+		int lines = numOfBikeBits * 3;
 		Vector3[] vertices = new Vector3[lines];
 		int[] triangles = new int[lines];
 		Vector2[] uv = new Vector2[lines];
-		
-		/*crashLines.material = new Material (Shader.Find("Particles/Additive"));
-		crashLines.useWorldSpace = false;
-		crashLines.SetColors(Color.white,Color.white);
-		crashLines.SetWidth(0.1f,0.1f);
-		crashLines.SetVertexCount(64);
-		*/
-		
+				
 		Destroy( crashFX, crashClip.length );
 		
-		
 		float indexToDeg = 180f/lines;
+		float speed = startSpeed;
 		
 		crashRenderer.material = new Material (Shader.Find("Particles/Additive"));
 		crashRenderer.material.SetColor("_TintColor", flashTintColor );
 		float startTime = Time.time;
-		float endTime = Time.time+0.2f;
-		
-		float speed = 30f;
+		float endTime = startTime + duration;
 		
 		GameObject[] bikeBits = new GameObject[lines];
 		
@@ -55,15 +51,11 @@ public class Crash : MonoBehaviour {
 			crashMesh.Clear();
 
 			for(int i=2;i<lines-4;i+=3){
-				float scale = Mathf.Lerp( 0f, 10f, Mathf.InverseLerp( startTime, endTime, Time.time ) );
-				//Vector2 outer = Random.insideUnitCircle*0.25f;
-				
 				
 				vertices[i] = 0.03f * ( Quaternion.Euler(0,0,indexToDeg*(i+1)) * Vector3.up );
 				vertices[i+1] += speed * Time.deltaTime * Random.Range(0.5f,1f) * ( Quaternion.Euler(0,0,indexToDeg*(i+1+Random.Range(-1f,1f))) * Vector3.right );
 				bikeBits[i].transform.localPosition = vertices[i+1];
 				
-				//+ Vector3.right * outer.x + Vector3.up * outer.y;
 				vertices[i+2] = 0.03f * ( Quaternion.Euler(0,0,indexToDeg*(i+1)) * -Vector3.up );
 				
 				triangles[i] = i;
@@ -74,18 +66,13 @@ public class Crash : MonoBehaviour {
 				uv[i+1] = new Vector2(0.5f,0);
 				uv[i+2] = new Vector2(1,0);
 				
-				/*
-				crashLines.SetPosition( i, transform.right * inner.x + transform.up * inner.y );
-				crashLines.SetPosition( i+1, transform.right * outer.x + transform.up * outer.y );
-				*/
-				
 			}
 			
-			speed *= 0.93f;
+			speed *= drag;
 				
-			
 			crashMesh.vertices = vertices;
 			crashMesh.triangles = triangles;
+			crashMesh.uv = uv;
 			crashMesh.RecalculateNormals();
 			crashMesh.RecalculateBounds();
 			yield return null;
@@ -98,15 +85,9 @@ public class Crash : MonoBehaviour {
 				bikeBits[i].transform.localPosition += speed * Time.deltaTime * Random.Range(0.5f,1f) * ( Quaternion.Euler(0,0,indexToDeg*(i+1+Random.Range(-1f,1f))) * Vector3.right );				
 			}
 			
-			speed *= 0.93f;
+			speed *= drag;
 			yield return null;
-				
-		}		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+		}	
 	}
 	
 	GameObject CreateBikeBit(){

@@ -65,7 +65,7 @@ public class FollowCam : MonoBehaviour {
 		
 		transform.LookAt( target );
 		
-		t.GetComponent<PlayerInteger>().OnCrashed += OnCrashed;
+		t.GetComponent<Player>().OnCrashed += OnCrashed;
 	}
 	
 	void OnCrashed(){

@@ -22,6 +22,9 @@ public class StartScript : MonoBehaviour {
 	public GUIStyle startStyle;
 	public string restartText;
 	
+	public float gameRestartTextDelay;
+	public float gameRestartTextFadeDuration;
+	
 	public bool isGameEnded;
 	public float gameEndedStartTime;
 	public Color backgroundColor;
@@ -158,7 +161,7 @@ public class StartScript : MonoBehaviour {
 	void OnGUI(){
 		if( isGameEnded ){
 			
-			float t = Mathf.InverseLerp( 2f, 5f, Time.time - gameEndedStartTime );
+			float t = Mathf.InverseLerp( gameRestartTextDelay, gameRestartTextDelay+gameRestartTextFadeDuration, Time.time - gameEndedStartTime );
 			
 			startStyle.normal.textColor = Color.Lerp( Color.clear, textColor, t );
 			Color currentBackgroundColor = Color.Lerp( Color.clear, backgroundColor, t );

@@ -17,6 +17,18 @@ public class StartScript : MonoBehaviour {
 	public GameObject playerCameraPrefab;
 	public Transform[] spawnPositions;
 	
+	public KeyCode restartKey;
+	
+	public GUIStyle startStyle;
+	public string restartText;
+	
+	public bool isGameEnded;
+	public float gameEndedStartTime;
+	public Color backgroundColor;
+	
+	protected Color textColor;
+	protected Texture2D background;
+	
 	[HideInInspector]
 	public bool paused = true;
 	
@@ -31,11 +43,14 @@ public class StartScript : MonoBehaviour {
 	protected int remainingPlayers = 4;
 	
 	void Start(){
-		
+		textColor = startStyle.normal.textColor;
+		background = new Texture2D(1,1,TextureFormat.ARGB32,false);
+		background.wrapMode = TextureWrapMode.Repeat;
+		startStyle.normal.background = background;
 	}
 	
 	public void StartGame (int numberOfPlayers) {
-		
+		isGameEnded = false;
 		this.numberOfPlayers = numberOfPlayers;
 		
 		int rows = (int)Mathf.Ceil( Mathf.Sqrt( numberOfPlayers ) );
@@ -79,6 +94,7 @@ public class StartScript : MonoBehaviour {
 	}
 	
 	public void GameReset(){
+		isGameEnded = false;
 		remainingPlayers = numberOfPlayers;
 		if( OnGameReset != null ) OnGameReset();
 		
@@ -91,6 +107,8 @@ public class StartScript : MonoBehaviour {
 		remainingPlayers--;
 		StopCoroutine("EndOfGameTest");
 		StartCoroutine("EndOfGameTest");
+		
+		
 	}
 	
 	public void Unpause(){
@@ -98,7 +116,7 @@ public class StartScript : MonoBehaviour {
 	}
 	
 	public void Pause(){
-		StopAllCoroutines();
+		//StopAllCoroutines();
 		paused = true;
 	}
 	
@@ -108,32 +126,52 @@ public class StartScript : MonoBehaviour {
 		yield return new WaitForSeconds(0.1f);
 		
 		if( remainingPlayers == 1 ) {
-			paused = true;
 			OnWin();
-			
-			yield return new WaitForSeconds(0.5f);
-			bool lastKeyState = Input.anyKey;
-			while( true ){
-				if( lastKeyState && !Input.anyKey ) break;
-				lastKeyState = Input.anyKey;
-				yield return null;
-			}
-			
-			GameReset();
+	
+			StartCoroutine( GameEnded() );
 			
 
 		}
 		else if( remainingPlayers == 0 ){
-			paused = true;
 			OnDraw();
 			
-			while( !Input.anyKeyDown ){
-				yield return null;
-			}
-			
-			GameReset();
+			StartCoroutine( GameEnded() );
 			
 		}
+	}
+	
+	IEnumerator GameEnded(){
+		paused = true;
+		gameEndedStartTime = Time.time;
+		isGameEnded = true;
+			
+		yield return new WaitForSeconds(0.5f);
+		while( !Input.GetKeyDown( restartKey ) ){
+			yield return null;
+		}
+		
+		GameReset();
+	}
+	
+	
+	
+	void OnGUI(){
+		if( isGameEnded ){
+			
+			float t = Mathf.InverseLerp( 2f, 5f, Time.time - gameEndedStartTime );
+			
+			startStyle.normal.textColor = Color.Lerp( Color.clear, textColor, t );
+			Color currentBackgroundColor = Color.Lerp( Color.clear, backgroundColor, t );
+			
+			background.SetPixel( 0, 0, currentBackgroundColor );
+			background.Apply();
+			
+			Rect rect = new Rect( 0, 0, Screen.width, Screen.height );
+		
+			GUI.Label( rect, restartText, startStyle );
+			
+		}
+		
 	}
 	
 }

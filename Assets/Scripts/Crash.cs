@@ -10,8 +10,8 @@ public class Crash : MonoBehaviour {
 	protected const int numOfBikeBits = 20;
 	protected const float startSpeed = 30f;
 	protected const float drag = 0.93f;
+	protected const int randomSeed = 0;
 	
-	// Use this for initialization
 	IEnumerator Start () {
 		GameObject crashFX = gameObject;
 		crashFX.transform.rotation = transform.rotation;
@@ -28,7 +28,8 @@ public class Crash : MonoBehaviour {
 		Vector3[] vertices = new Vector3[lines];
 		int[] triangles = new int[lines];
 		Vector2[] uv = new Vector2[lines];
-				
+		
+		/* this effect */
 		Destroy( crashFX, crashClip.length );
 		
 		float indexToDeg = 180f/lines;
@@ -41,13 +42,18 @@ public class Crash : MonoBehaviour {
 		
 		GameObject[] bikeBits = new GameObject[lines];
 		
-		for( int i=0;i<lines;i++){
+		/* Create rectangular bits of bike */
+		for(int i=0;i<lines;i++){
 			bikeBits[i] = CreateBikeBit();
 			bikeBits[i].renderer.sharedMaterial = crashRenderer.sharedMaterial;
 		}
 		
+		/* On each frame, regenerate the explotion lines to each bike bit */
 		while( Time.time < endTime ){
-			Random.seed = 0;
+			
+			/* Make sure each random spike is at a consistent random speed and angle each frame */
+			Random.seed = randomSeed;
+			
 			crashMesh.Clear();
 
 			for(int i=2;i<lines-4;i+=3){
@@ -68,19 +74,25 @@ public class Crash : MonoBehaviour {
 				
 			}
 			
+			/* slow down the movement */
 			speed *= drag;
-				
+			
 			crashMesh.vertices = vertices;
 			crashMesh.triangles = triangles;
 			crashMesh.uv = uv;
 			crashMesh.RecalculateNormals();
 			crashMesh.RecalculateBounds();
+			
 			yield return null;
 		}
+		
 		yield return null;
+		
 		Destroy( crashRenderer );
-		while( true ){
-			Random.seed = 0;
+		
+		/* Move all bike bits */
+		while( sfxSource.isPlaying ){
+			Random.seed = randomSeed;
 			for(int i=2;i<lines-4;i+=3){
 				bikeBits[i].transform.localPosition += speed * Time.deltaTime * Random.Range(0.5f,1f) * ( Quaternion.Euler(0,0,indexToDeg*(i+1+Random.Range(-1f,1f))) * Vector3.right );				
 			}
@@ -90,6 +102,7 @@ public class Crash : MonoBehaviour {
 		}	
 	}
 	
+	/* Create a random rectangle mesh */
 	GameObject CreateBikeBit(){
 		GameObject gib = new GameObject();
 		gib.transform.parent = transform;

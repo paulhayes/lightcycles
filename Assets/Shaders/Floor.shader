@@ -1,4 +1,4 @@
-﻿Shader "Custom/Floor" {
+Shader "Custom/Floor" {
 	Properties {
 		_MainTex ("Base (RGB)", 2D) = "white" {}
 		_CellColor ("Cell Color", Color) = (0,0,0,0)

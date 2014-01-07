@@ -78,7 +78,9 @@ public class Player : MonoBehaviour {
 		CreateTrailLine();
 		
 		audio.clip = startClip;
-		audio.PlayDelayed(0.5f);
+
+		//audio.PlayDelayed(0.5f);
+		audio.Play( (ulong) ( startClip.samples * 0.5f ) );
 			
 	}
 	

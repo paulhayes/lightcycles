@@ -88,10 +88,16 @@ public class Player : MonoBehaviour {
 		if( gameController.paused || dead ) return;
 		
 		CheckKeys();
+	}
+
+	void FixedUpdate(){
+		if( gameController.paused || dead ) return;
+
 		Move();
 		UpdateBike();
 		UpdateCurrentTailLine();
 		CheckForCollisions();
+
 	}
 	
 	void CheckKeys(){

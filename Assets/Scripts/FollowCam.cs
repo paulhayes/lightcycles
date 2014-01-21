@@ -33,7 +33,7 @@ public class FollowCam : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		
 		if( gameOver ) {
 			

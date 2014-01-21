@@ -11,14 +11,15 @@ public class Menu : MonoBehaviour {
 	
 	public bool menuEnabled = true;
 	public bool initMenu = true;
-	public StartScript startScript;
 	public Rect menuSize;
 	
 	public Color backgroundColor;
 	
 	protected Texture2D background;
 	protected GUIStyle backgroundStyle;
-	
+
+	protected GameController gameController;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -27,8 +28,9 @@ public class Menu : MonoBehaviour {
 		background.Apply();
 		backgroundStyle = new GUIStyle();
 		backgroundStyle.normal.background = background;
-		
-		startScript.OnGameEnd += OnGameEnd;
+
+		gameController = GetComponent<GameController>();
+		gameController.OnGameEnd += OnGameEnd;
 	}
 	
 	void Update(){
@@ -38,7 +40,7 @@ public class Menu : MonoBehaviour {
 	}
 	
 	void MenuOn(){
-		startScript.Pause();
+		gameController.Pause();
 		menuEnabled = true;
 	}
 	
@@ -60,20 +62,20 @@ public class Menu : MonoBehaviour {
 		GUILayout.Label("Light Cycles", title );
 		
 		if( !initMenu && GUILayout.Button("Resume", customButton) ){
-			startScript.Unpause();
+			gameController.Unpause();
 			MenuOff();
 		}
 		
 		if( GUILayout.Button("2 Player", customButton) ){ 
-			startScript.StartGame(2);
+			gameController.StartGame(2);
 			MenuOff();
 		}
 		if( GUILayout.Button("3 Player", customButton) ){ 		
-			startScript.StartGame(3);
+			gameController.StartGame(3);
 			MenuOff();
 		}
 		if( GUILayout.Button("4 Player", customButton) ){ 			
-			startScript.StartGame(4);
+			gameController.StartGame(4);
 			MenuOff();
 		}
 		

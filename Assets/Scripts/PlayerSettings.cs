@@ -5,6 +5,6 @@ public class PlayerSettings {
 
 	public int player;
 	
-	public StartScript.Keys keys;
+	public GameController.Keys keys;
 	public Color playerColor;
 }

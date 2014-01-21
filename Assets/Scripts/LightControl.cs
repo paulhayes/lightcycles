@@ -8,15 +8,15 @@ public class LightControl : MonoBehaviour {
 	public float destinationIntensity;
 	public float fadeSpeed;
 	
-	protected StartScript startScript;
+	protected GameController gameController;
 	
 	void Start () {
-		startScript = (StartScript)Object.FindObjectOfType(typeof(StartScript));
+		gameController = FindObjectOfType<GameController>();
 		
-		startScript.OnGameStart += LightUp;
-		startScript.OnWin += LightDown;
-		startScript.OnDraw += LightDown;
-		startScript.OnGameReset += LightUp;
+		gameController.OnGameStart += LightUp;
+		gameController.OnWin += LightDown;
+		gameController.OnDraw += LightDown;
+		gameController.OnGameReset += LightUp;
 	}
 	
 	void LightUp(){

@@ -20,7 +20,7 @@ public class Player : MonoBehaviour {
 	public Transform rearWheel;
 	
 	[HideInInspector]
-	public StartScript startScript;
+	public GameController gameController;
 	
 	public event Action OnCrashed;
 	
@@ -79,13 +79,13 @@ public class Player : MonoBehaviour {
 		
 		audio.clip = startClip;
 
-		//audio.PlayDelayed(0.5f);
-		audio.Play( (ulong) ( startClip.samples * 0.5f ) );
+		audio.PlayDelayed(0.5f);
+		//audio.Play( (ulong) ( startClip.samples * 0.5f ) );
 			
 	}
 	
 	void Update () {
-		if( startScript.paused || dead ) return;
+		if( gameController.paused || dead ) return;
 		
 		CheckKeys();
 		Move();
@@ -200,12 +200,12 @@ public class Player : MonoBehaviour {
 				
 	}
 	
-	void SetStartScript(StartScript s){
-		startScript = s;
-		startScript.OnWin += OnWin;
-		startScript.OnDraw += OnDraw;
-		startScript.OnGameReset += OnGameReset;
-		startScript.OnGameStart += OnGameStart;
+	void SetGameController(GameController controller){
+		gameController = controller;
+		gameController.OnWin += OnWin;
+		gameController.OnDraw += OnDraw;
+		gameController.OnGameReset += OnGameReset;
+		gameController.OnGameStart += OnGameStart;
 	}
 	
 	void Crashed(){
@@ -214,7 +214,7 @@ public class Player : MonoBehaviour {
 		currentLineEnd = transform.position;
 		UpdateCurrentTailLine();
 		
-		startScript.PlayerCrashed();
+		gameController.PlayerCrashed();
 		
 		dead = true;
 	
@@ -252,10 +252,10 @@ public class Player : MonoBehaviour {
 	
 	void OnGameStart(){
 		
-		startScript.OnWin -= OnWin;
-		startScript.OnDraw -= OnDraw;
-		startScript.OnGameReset -= OnGameReset;
-		startScript.OnGameStart -= OnGameStart;
+		gameController.OnWin -= OnWin;
+		gameController.OnDraw -= OnDraw;
+		gameController.OnGameReset -= OnGameReset;
+		gameController.OnGameStart -= OnGameStart;
 
 		
 		Destroy( gameObject );

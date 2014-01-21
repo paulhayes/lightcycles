@@ -14,7 +14,7 @@ public class FollowCam : MonoBehaviour {
 	protected Vector3 speed;
 	protected Vector3 lastTarget;
 	
-	protected StartScript startScript;
+	protected GameController gameController;
 	
 	protected Vector3 startPosition;
 	protected Quaternion startRotation;
@@ -23,10 +23,10 @@ public class FollowCam : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		startScript = (StartScript) Object.FindObjectOfType(typeof( StartScript ) );
-		startScript.OnGameStart += OnGameStart;
-		startScript.OnGameReset += OnGameReset;
-		startScript.OnWin += OnWin;
+		gameController = FindObjectOfType<GameController>();
+		gameController.OnGameStart += OnGameStart;
+		gameController.OnGameReset += OnGameReset;
+		gameController.OnWin += OnWin;
 		
 		startPosition = transform.position;
 		startRotation = transform.rotation;
@@ -77,9 +77,9 @@ public class FollowCam : MonoBehaviour {
 	}
 	
 	void OnGameStart(){
-		startScript.OnGameStart -= OnGameStart;
-		startScript.OnGameReset -= OnGameReset;
-		startScript.OnWin -= OnWin;
+		gameController.OnGameStart -= OnGameStart;
+		gameController.OnGameReset -= OnGameReset;
+		gameController.OnWin -= OnWin;
 		Destroy( gameObject );
 	}
 	

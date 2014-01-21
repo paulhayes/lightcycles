@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class StartScript : MonoBehaviour {
+public class GameController : MonoBehaviour {
 	
 	public event Action OnGameStart;
 	public event Action OnGameEnd;
@@ -78,7 +78,7 @@ public class StartScript : MonoBehaviour {
 				playerSettings.playerColor = playerColors[playerIndex];
 				playerSettings.player = playerIndex;
 				
-				player.SendMessage("SetStartScript", this);
+				player.SendMessage("SetGameController", this);
 				player.SendMessage("SetPlayerCamera", playerCamera.camera);
 				player.SendMessage("Settings", playerSettings);
 				playerCamera.SendMessage("SetTarget", player );

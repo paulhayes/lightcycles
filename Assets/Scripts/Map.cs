@@ -22,9 +22,9 @@ public class Map : MonoBehaviour {
 		
 		map = new Texture2D(size,size,TextureFormat.RGB24,false);
 		
-		StartScript startScript = (StartScript)Object.FindObjectOfType(typeof( StartScript ) );
-		startScript.OnGameStart += OnGameStart;
-		startScript.OnGameReset += OnGameStart;
+		GameController gameController = FindObjectOfType<GameController>();
+		gameController.OnGameStart += OnGameStart;
+		gameController.OnGameReset += OnGameStart;
 	}
 	
 	void OnGameStart(){
